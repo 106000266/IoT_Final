@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Parking LOT</title>
+<style>
+h1
+{
+  text-align: center;
+  font-size: 50px;
+}
+table
+{
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th
+{
+  text-align: center;
+  padding: 8px;
+  font-size: 100px;
+}
+
+.box{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 50%;
+  background: #000000;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgb(55, 55, 55);
+  border: 10px solid #dddddd;
+  color: white;
+  padding: 10px;
+}
+
+.box span{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.box span:nth-child(1)
+{
+  transform:rotate(0deg);
+}
+
+.box span:nth-child(2)
+{
+  transform:rotate(180deg);
+}
+
+.box span:before
+{
+  content: '';
+  position: absolute;
+  width:100%;
+  height: 5px;
+  background: #ffffff;
+  animation: animate 4s linear infinite;
+}
+
+@keyframes animate 
+{
+  0% {
+  transform:scaleX(0);
+  transform-origin: left;
+  }
+  50%
+  {
+    transform:scaleX(1);
+  transform-origin: left;
+  }
+  50.1%
+  {
+    transform:scaleX(1);
+  transform-origin: right;
+    
+  }
+  
+  100%
+  {
+    transform:scaleX(0);
+  transform-origin: right;
+    
+  }
+} 
+</style>
+</head>
+<body>
+
+<h1>Parking Lot</h1>
+<div class = "box">
+  <span></span>
+  <span></span>
+  <table>
+    <tr>
+      <th>A</th>
+      <th>B</th>
+    </tr>
+    <tr>
+      <td>{p1:}!</td>
+      <td>{p2:}!</td>
+    </tr>
+  </table>
+</box>
+
+</body>
+</html>
+
