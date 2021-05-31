@@ -22,13 +22,6 @@ void setup()
   Serial.begin(9600);
   
   Serial.println(wifi.getAPList().c_str());
-  delay(150);
-
-    if (wifi.setOprToStationSoftAP()) {
-        Serial.print("to station + softap ok\r\n");
-    } else {
-        Serial.print("to station + softap err\r\n");
-    }
   
   if (wifi.joinAP(SSID, PASSWORD)) {
         Serial.print("Join AP success\r\n");
