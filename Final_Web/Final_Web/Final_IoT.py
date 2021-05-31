@@ -3,13 +3,7 @@ import socket
 import json
 import re
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
-
-class Main_System:
-    def __init__(self,data):
-        self.parking_A = None
-        self.parking_B = None
-        self.data = data
-
+from Final_Web import get_value_A, get_value_B
 
 HOST = '192.168.56.1' 
 # [TODO] 166XX, XX is your tool box number(done)
@@ -36,11 +30,17 @@ def mqttcallback(client, userdata, message):
         print("Message received: " + str(message.payload))
         string = message.payload.decode("utf-8");
         if "desired" in string:
-            substring = string[23:33]
-            s = substring.encode("utf-8")
-            print(s)
+            substringA = string[29:30]
+            substringB = string[39:40]
+            s1 = substringA.encode("utf-8")
+            s2 = substringB.encode("utf-8")
+            print(s1)
+            print(s2)
+
+            get_value_A(s1)
+            get_value_B(s2)
             
-            conn.send(s)
+            #conn.send(s)
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:
         print(e)
@@ -69,11 +69,11 @@ def on_new_client(clientsocket,addr):
         string = data.decode("utf-8")
         if (string != ""):
             print(string)
-            lightness = re.findall(r"[-+]?\d*\.\d+|\d+",string)
+            distance = re.findall(r"[-+]?\d*\.\d+|\d+",string)
             #currentRing = lightness[1]
-            print("received: "+lightness[0])
+            print("received: "+distance[0])
             topic = "$aws/things/106000266/shadow/update"
-            payload = '{"state":{"reported":{"lightness":'+lightness[0]+'}}}'
+            payload = '{"state":{"reported":{"distance":'+ distance[0] +'}}}'
             
             myAWSIoTMQTTClient.publish(topic, payload, 0)
             pass
