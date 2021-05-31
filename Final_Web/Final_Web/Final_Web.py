@@ -1,18 +1,24 @@
+####################################
+# THIS IS A DEMO  ##################
+# PLEASE IMPLEMENT ON FINAL_IoT.py #
+####################################
+
 from flask import Flask, render_template, Response, request, redirect, url_for
+from Final_IoT import *
 
 app = Flask(__name__)
 valueA = 2
 valueB = 2
 
-def get_value_A(keyword):
+def getvala(keyword):
     valueA = keyword
 
-def get_value_B(keyword):
+def getvalb(keyword):
     valueB = keyword
 
 @app.route('/')
 def index():
-    #return render_template('control_gate.html')
+    return render_template('control_gate.html')
     if valueA == 0:
         return render_template('index.html', p1 = 'FULL', p2 = valueB)
     elif valueB == 0:
@@ -22,6 +28,7 @@ def index():
 
 @app.route("/forward/", methods=['POST'])
 def open_gate():
+    Final_IoT.control_gate()
     return render_template('control_gate.html')
 
 if __name__ == '__main__':

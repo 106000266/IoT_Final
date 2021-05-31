@@ -25,6 +25,7 @@
     <Compile Include="Final_Web.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="templates\control_gate.html" />
     <Content Include="templates\index.html" />
   </ItemGroup>
   <ItemGroup>
