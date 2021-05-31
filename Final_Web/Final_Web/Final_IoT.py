@@ -73,7 +73,7 @@ def on_new_client(clientsocket,addr):
             #currentRing = lightness[1]
             print("received: "+distance[0])
             topic = "$aws/things/106000266/shadow/update"
-            payload = '{"state":{"reported":{"distance":'+ distance[0] +'}}}'
+            payload = '{"state":{"reported":{"distanceA1":'+ distance[0] +'}}}'
             
             myAWSIoTMQTTClient.publish(topic, payload, 0)
             pass
