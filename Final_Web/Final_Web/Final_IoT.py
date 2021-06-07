@@ -9,7 +9,8 @@ from flask import Flask, render_template, Response, request, redirect, url_for
 import sys
 
 app = Flask(__name__)
-signal = True
+signal = False
+car_is_in = False
 
 @app.route('/')
 def index():
@@ -18,8 +19,9 @@ def index():
 @app.route("/forward/", methods=['POST'])
 def open_gate():
     global signal
-    signal = not signal
-    print(signal, file=sys.stderr)
+    signal = True
+    print("signal: %b", signal, file=sys.stderr)
+    print("Button pressed, diable LED")
     return render_template('control_gate.html')
 
 valueA = 1
@@ -80,20 +82,30 @@ myAWSIoTMQTTClient.connect()
 myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallback)
 
 def on_new_client(clientsocket,addr):
-    global currentRing, signal
+    global currentRing, signal, car_is_in
     while True:
-        print(signal, file=sys.stderr)
-        if (signal is True) and (clientsocket is not None):
-            msg = 'car is here'
+        print("signal: %b", signal, file=sys.stderr)
+        if clientsocket is not None:
+            if signal is False:
+                print("inside enable")
+                msg = 'enable' # parking space is ready to park, disable LED
+            else:
+                print("inside disable")
+                msg = 'disable' # parking space can not be park now, enable LED
+
             clientsocket.send(msg.encode('utf-8'))#send signal back to arduino
-            print("message sent to arduino")
         # [TODO] decode message from Arduino and send to AWS(done)
         data = clientsocket.recv(6)
         string = data.decode("utf-8")
         if (string != ""):
             print(string)
             distance = re.findall(r"[-+]?\d*\.\d+|\d+",string)
-            #currentRing = lightness[1]
+            if int(distance[0]) > 10 and car_is_in is True:
+                signal = False
+                car_is_in = False
+            if int(distance[0]) < 10 and signal is True:
+                car_is_in = True
+
             print("received from arduino: "+distance[0])
             topic = "$aws/things/106000266/shadow/update"
             payload = '{"state":{"reported":{"distanceA1":'+ distance[0] +', "distanceB1": 2 }}}'

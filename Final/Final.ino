@@ -24,7 +24,7 @@ void setup()
   pinMode(TriggerPin, OUTPUT);
   pinMode(EchoPin, INPUT);
   pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, HIGH);
   Serial.begin(9600);
   
   Serial.println(wifi.getAPList().c_str());
@@ -80,6 +80,9 @@ void loop()
           Serial.print((char)buffer[i]);
       }
       Serial.print("]\r\n");
+  }
+
+  if (received_msg.indexOf('d') == -1) {
       digitalWrite(ledPin, HIGH);
   }
   else {
