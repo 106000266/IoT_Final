@@ -1,4 +1,5 @@
 from flask import Flask, render_template, Response, request, redirect, url_for
+from Data_Bridge import get_signal
 import threading
 import socket
 import json
@@ -6,8 +7,8 @@ import re
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 
 app = Flask(__name__)
-valueA = 2
-valueB = 2
+valueA = 1
+valueB = 0
 
 HOST = '192.168.56.1' 
 # [TODO] 166XX, XX is your tool box number(done)
@@ -25,13 +26,6 @@ currentRing = None
 Lock = threading.Lock()
 # [HINT] variable for socket
 conn, addr = None,None
-
-signal = True
-
-def control_gate():
-    global signal
-    signal = not signal
-    print(signal)
 
 def mqttcallback(client, userdata, message):
     global currentRing,conn,addr,Lock,valueA,valueB
@@ -73,6 +67,10 @@ myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallbac
 def on_new_client(clientsocket,addr):
     global currentRing
     while True:
+        signal = get_signal()
+        print(signal)
+        if signal and clientsocket is not None:
+            clientsocket.send()#send signal back to arduino
         # [TODO] decode message from Arduino and send to AWS(done)
         data = clientsocket.recv(6)
         string = data.decode("utf-8")
@@ -99,11 +97,6 @@ def index():
         return render_template('index.html', p1 = valueA, p2 = 'FULL')
     else:
         return render_template('index.html', p1 = valueA, p2 = valueB)
-
-@app.route("/forward/", methods=['POST'])
-def open_gate():
-    control_gate()
-    return render_template('control_gate.html')
 
 def main():
     global conn, addr
