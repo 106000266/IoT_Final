@@ -1,11 +1,11 @@
-from Data_Bridge import get_signal
+# from Data_Bridge import get_signal, give_value
+import Data_Bridge
 import threading
 import socket
 import json
 import re
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 
-app = Flask(__name__)
 valueA = 1
 valueB = 0
 
@@ -41,6 +41,8 @@ def mqttcallback(client, userdata, message):
             print(s2)
             valueA = int(s1)
             valueB = int(s2)
+
+            Data_Bridge.give_value(valueA)
             
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:
@@ -64,11 +66,12 @@ myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallbac
 def on_new_client(clientsocket,addr):
     global currentRing
     while True:
-        # signal = get_signal()
-        # print(signal)
-        # if signal and clientsocket is not None:
-        #     clientsocket.send()#send signal back to arduino
-            # print("message sent to arduino")
+        signal = Data_Bridge.get_signal()
+        print(signal)
+        if signal and clientsocket is not None:
+            msg = 'car is here'
+            clientsocket.send(msg.encode('utf-8'))#send signal back to arduino
+            print("message sent to arduino")
         # [TODO] decode message from Arduino and send to AWS(done)
         data = clientsocket.recv(6)
         string = data.decode("utf-8")
