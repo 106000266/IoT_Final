@@ -5,6 +5,22 @@ import socket
 import json
 import re
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
+from flask import Flask, render_template, Response, request, redirect, url_for
+import sys
+
+app = Flask(__name__)
+signal = True
+
+@app.route('/')
+def index():
+    return render_template('control_gate.html')
+
+@app.route("/forward/", methods=['POST'])
+def open_gate():
+    global signal
+    signal = not signal
+    print(signal, file=sys.stderr)
+    return render_template('control_gate.html')
 
 valueA = 1
 valueB = 0
@@ -42,7 +58,7 @@ def mqttcallback(client, userdata, message):
             valueA = int(s1)
             valueB = int(s2)
 
-            Data_Bridge.give_value(valueA)
+            conn.send(valueA)
             
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:
@@ -64,11 +80,10 @@ myAWSIoTMQTTClient.connect()
 myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallback)
 
 def on_new_client(clientsocket,addr):
-    global currentRing
+    global currentRing, signal
     while True:
-        signal = Data_Bridge.get_signal()
-        print(signal)
-        if signal and clientsocket is not None:
+        print(signal, file=sys.stderr)
+        if (signal is True) and (clientsocket is not None):
             msg = 'car is here'
             clientsocket.send(msg.encode('utf-8'))#send signal back to arduino
             print("message sent to arduino")
@@ -91,16 +106,18 @@ def on_new_client(clientsocket,addr):
 
 print('server start at: %s:%s' % (HOST, PORT))
 print('wait for connection...')
+conn, addr = s.accept()
+print('connected by ' + str(addr))
 
 def main():
     global conn, addr
     try:
-        # app.run(debug = True, host = '0.0.0.0', port = 16628)
-        conn, addr = s.accept()
-        print('connected by ' + str(addr))
         t = threading.Thread(target=on_new_client,args=(conn,addr))
         tSocket.append(t)
         tSocket[-1].start()
+        print("running")
+        app.run(debug = False, host = '0.0.0.0', port = 16628)
+        
     except Exception as e:
         print(e)
         s.close()

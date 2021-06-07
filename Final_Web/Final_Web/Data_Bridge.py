@@ -12,9 +12,7 @@ def give_value(arg):
 
 def get_signal():
     global signal
-    print("signal in get(): " + signal)
     return signal
 
 def get_value():
-    global A
     return A

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="refresh" content="3" >
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <title>Parking LOT</title>
 <style>
 h1
@@ -96,8 +96,21 @@ td, th
 } 
 </style>
 </head>
-<body>
 
+<script type="text/javascript">
+    var intervalID = setInterval(update_values, 1000);
+    $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+    function update_values()
+    {
+        $.getJSON($SCRIPT_ROOT + '/_stuff', function (data)
+        {
+            $('#result').text(data.result);
+            console.log(data)
+        });
+    };
+</script>
+
+<body onload="update_values();">
 <h1>Parking Lot</h1>
 <div class = "box">
   <span></span>
@@ -108,8 +121,8 @@ td, th
       <th>B</th>
     </tr>
     <tr>
-      <td>{{ p1 }}</td>
-      <td>{{ p2 }}</td>
+        <td id="result"></td>
+        <td>{{ p2 }}</td>
     </tr>
   </table>
 </div>
