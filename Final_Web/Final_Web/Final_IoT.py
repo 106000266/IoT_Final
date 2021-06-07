@@ -1,31 +1,36 @@
 # from Data_Bridge import get_signal, give_value
-import Data_Bridge
+from Data_Bridge import get_value
 import threading
 import socket
 import json
 import re
+import os
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
-from flask import Flask, render_template, Response, request, redirect, url_for
+from flask import Flask, render_template, Response, request, redirect, url_for, jsonify
 import sys
 
 app = Flask(__name__)
-signal = False
-car_is_in = False
+@app.route('/_stuff', methods = ['GET'])
+def stuff():
+    global valueA
+    return jsonify(result = valueA)
 
 @app.route('/')
 def index():
-    return render_template('control_gate.html')
+    return render_template('index.html', p2 = valueB)
 
 @app.route("/forward/", methods=['POST'])
 def open_gate():
     global signal
     signal = True
-    print("signal: %b", signal, file=sys.stderr)
-    print("Button pressed, diable LED")
-    return render_template('control_gate.html')
+    # print("signal: %b", signal, file=sys.stderr)
+    # print("Button pressed, diable LED")
+    return render_template('index.html', p2 = valueB)
 
 valueA = 1
 valueB = 0
+signal = False
+car_is_in = False
 
 HOST = '192.168.137.1' 
 # [TODO] 166XX, XX is your tool box number(done)
@@ -60,7 +65,7 @@ def mqttcallback(client, userdata, message):
             valueA = int(s1)
             valueB = int(s2)
 
-            conn.send(valueA)
+            # conn.send(valueA)
             
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:

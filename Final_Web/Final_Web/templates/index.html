@@ -4,11 +4,48 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <title>Parking LOT</title>
 <style>
+.split 
+{
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  background-color: #ddd;
+}
+
+.right {
+  right: 0;
+  background-color: red;
+}
+
+.centered1 {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.centered2 {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
 h1
 {
-  text-align: center;
-  font-size: 50px;
+    font-size:60px;
 }
+
 table
 {
   font-family: arial, sans-serif;
@@ -19,17 +56,17 @@ table
 td, th
 {
   text-align: center;
-  padding: 8px;
-  font-size: 100px;
+  padding: 5px;
+  font-size: 80px;
 }
 
 .box{
   position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  height: 50%;
+  top:200%;
+  left:50%;
+  width: 200%;
+  height: 130%;
   background: #000000;
   box-sizing: border-box;
   overflow: hidden;
@@ -94,6 +131,69 @@ td, th
     
   }
 } 
+.content 
+{
+   max-width: 500px;
+   margin: 0px 10px 2px 800px;
+   background: white;
+   padding: 100px;
+}
+
+.button 
+{
+   background-color: #555555;
+   border: none;
+   color: white;
+   width:100%;
+   padding: 16px 32px;
+   text-align: center;
+   display: inline-block;
+   font-size: 72px;
+   margin: auto;
+   transition-duration: 0.4s;
+   cursor: pointer;
+}
+
+.button:hover
+{
+   background-color: white; 
+   color: black; 
+   border: 2px solid #555555;
+}
+
+.button1
+{
+   background-color: #555555;
+   border: none;
+   color: white;
+   width:100%;
+   text-align: center;
+   display: inline-block;
+   font-size: 35px;
+   transition-duration: 0.4s;
+   cursor: pointer;
+}
+
+.button1:hover
+{
+   background-color: white; 
+   color: black; 
+   border: 2px solid #555555;
+}
+
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0px;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -111,21 +211,49 @@ td, th
 </script>
 
 <body onload="update_values();">
-<h1>Parking Lot</h1>
-<div class = "box">
-  <span></span>
-  <span></span>
-  <table>
-    <tr>
-      <th>A</th>
-      <th>B</th>
-    </tr>
-    <tr>
-        <td id="result"></td>
-        <td>{{ p2 }}</td>
-    </tr>
-  </table>
+
+<div class = "split left">
+  <div class="centered2">
+    <h1>Parking Lot</h1>
+    <div class="box">
+      <span></span>
+      <span></span>
+      <table>
+          <tr>
+              <th>A</th>
+              <th>B</th>
+          </tr>
+          <tr>
+              <td id="result"></td>
+              <td>{{ p2 }}</td>
+          </tr>
+      </table>
+    </div>
+    <button class="button1" onclick="Show_Path()">I want to park</button>
+    <div id="overlay">
+        <img id="path" style="width:120%;height:120%;display:none" src="{{url_for('static',filename = 'way.jpg')}}">
+    </div>
+    <script>
+        function Show_Path()
+        {
+            document.getElementById("path").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+            setTimeout(function () {
+                document.getElementById('path').style.display = "none";
+                document.getElementById("overlay").style.display = "none";
+            }, 5000);
+        }
+    </script>
+  </div>
 </div>
 
+<div class="split right content">
+    <div class="centered1">
+        <h1>Press Button to Shut Down LED</h1>
+        <form action="/forward/" method="post">
+            <button class="button" type="submit">I Have Arrived</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>
