@@ -23,6 +23,9 @@
   <ItemGroup>
     <Compile Include="Final_IoT.py" />
     <Compile Include="Final_Web.py" />
+    <Compile Include="Data_Bridge.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="templates\control_gate.html" />
