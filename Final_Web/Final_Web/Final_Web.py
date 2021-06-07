@@ -1,9 +1,7 @@
 from flask import Flask, render_template, Response, request, redirect, url_for
-from Final_IoT import control_gate
+from Data_Bridge import control
 
 app = Flask(__name__)
-valueA = 2
-valueB = 2
 
 @app.route('/')
 def index():
@@ -11,7 +9,7 @@ def index():
 
 @app.route("/forward/", methods=['POST'])
 def open_gate():
-    control_gate()
+    control()
     return render_template('control_gate.html')
 
 if __name__ == '__main__':
