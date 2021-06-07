@@ -1,14 +1,9 @@
-from flask import Flask, render_template, Response, request, redirect, url_for
 from Data_Bridge import get_signal
 import threading
 import socket
 import json
 import re
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
-
-app = Flask(__name__)
-valueA = 1
-valueB = 0
 
 HOST = '192.168.56.1' 
 # [TODO] 166XX, XX is your tool box number(done)
@@ -48,7 +43,6 @@ def mqttcallback(client, userdata, message):
     except Exception as e:
         print(e)
 
-
 # [TODO] Define ENDPOINT, CLIENT_ID, PATH_TO_CERT, PATH_TO_KEY, PATH_TO_ROOT(done)
 ENDPOINT = "a2n8nzfjjzpdhv-ats.iot.us-east-2.amazonaws.com"
 CLIENT_ID = "b0e1f939f3a24ac9bfd952dc7c93ae4a"
@@ -67,10 +61,10 @@ myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallbac
 def on_new_client(clientsocket,addr):
     global currentRing
     while True:
-        signal = get_signal()
-        print(signal)
-        if signal and clientsocket is not None:
-            clientsocket.send()#send signal back to arduino
+        #signal = get_signal()
+        #print(signal)
+        #if signal and clientsocket is not None:
+        #    clientsocket.send()#send signal back to arduino
         # [TODO] decode message from Arduino and send to AWS(done)
         data = clientsocket.recv(6)
         string = data.decode("utf-8")
@@ -89,19 +83,9 @@ def on_new_client(clientsocket,addr):
 print('server start at: %s:%s' % (HOST, PORT))
 print('wait for connection...')
 
-@app.route('/')
-def index():
-    if valueA == 0:
-        return render_template('index.html', p1 = 'FULL', p2 = valueB)
-    elif valueB == 0:
-        return render_template('index.html', p1 = valueA, p2 = 'FULL')
-    else:
-        return render_template('index.html', p1 = valueA, p2 = valueB)
-
 def main():
     global conn, addr
     try:
-        app.run(debug = True, host = '0.0.0.0', port = 16628)
         conn, addr = s.accept()
         print('connected by ' + str(addr))
         t = threading.Thread(target=on_new_client,args=(conn,addr))
