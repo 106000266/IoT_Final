@@ -32,10 +32,10 @@ def mqttcallback(client, userdata, message):
     try:
         # [TODO] write callback to deal with MQTT message from Lambda(done)
         print("Message received: " + str(message.payload))
-        string = message.payload.decode("utf-8");
+        string = message.payload.decode("utf-8")
         if "desired" in string:
-            substringA = string[29:30]
-            substringB = string[39:40]
+            substringA = string[35]
+            substringB = string[50]
             s1 = substringA.encode("utf-8")
             s2 = substringB.encode("utf-8")
             print(s1)
@@ -43,7 +43,6 @@ def mqttcallback(client, userdata, message):
             valueA = int(s1)
             valueB = int(s2)
             
-            conn.send(s)
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:
         print(e)
@@ -67,10 +66,11 @@ myAWSIoTMQTTClient.subscribe("$aws/things/106000266/shadow/update",1,mqttcallbac
 def on_new_client(clientsocket,addr):
     global currentRing
     while True:
-        signal = get_signal()
-        print(signal)
-        if signal and clientsocket is not None:
-            clientsocket.send()#send signal back to arduino
+        # signal = get_signal()
+        # print(signal)
+        # if signal and clientsocket is not None:
+        #     clientsocket.send()#send signal back to arduino
+            # print("message sent to arduino")
         # [TODO] decode message from Arduino and send to AWS(done)
         data = clientsocket.recv(6)
         string = data.decode("utf-8")
@@ -78,10 +78,9 @@ def on_new_client(clientsocket,addr):
             print(string)
             distance = re.findall(r"[-+]?\d*\.\d+|\d+",string)
             #currentRing = lightness[1]
-            print("received: "+distance[0])
+            print("received from arduino: "+distance[0])
             topic = "$aws/things/106000266/shadow/update"
-            payload = '{"state":{"reported":{"distanceA1":'+ distance[0] +'}}}'
-            
+            payload = '{"state":{"reported":{"distanceA1":'+ distance[0] +', "distanceB1": 2 }}}'
             myAWSIoTMQTTClient.publish(topic, payload, 0)
             pass
 
@@ -104,11 +103,10 @@ def index():
 def main():
     global conn, addr
     try:
-        app.run(debug = True, host = '0.0.0.0', port = 16628)
+        # app.run(debug = True, host = '0.0.0.0', port = 16628)
         conn, addr = s.accept()
         print('connected by ' + str(addr))
         t = threading.Thread(target=on_new_client,args=(conn,addr))
-        t.daemon = True
         tSocket.append(t)
         tSocket[-1].start()
     except Exception as e:

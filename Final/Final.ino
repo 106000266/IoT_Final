@@ -17,6 +17,7 @@ int ledPin = 5;      // select the pin for the LED
 long Duration = 0;
 uint8_t buffer[64] = {0};
 uint32_t len;
+bool msg_sent = false;
 
 void setup()
 {
@@ -66,7 +67,7 @@ void loop()
   Serial.println(" cm");
 
   String msg = String(Distance_cm);
-  wifi.send((const uint8_t*)msg.c_str(), msg.length());
+  msg_sent = wifi.send((const uint8_t*)msg.c_str(), msg.length());
 
 //  String received_msg;
 //  buffer[64] = {0};
@@ -85,6 +86,5 @@ void loop()
 //      digitalWrite(ledPin, LOW);
 //  }
 
-
-  delay(1000);
+  delay(5000);
 }
