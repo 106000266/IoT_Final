@@ -9,7 +9,7 @@ app = Flask(__name__)
 valueA = 2
 valueB = 2
 
-HOST = '192.168.56.1' 
+HOST = '192.168.137.1' 
 # [TODO] 166XX, XX is your tool box number(done)
 PORT = 16628
 
@@ -29,9 +29,12 @@ conn, addr = None,None
 signal = True
 
 def control_gate():
-    global signal
+    global signal, conn, addr
     signal = not signal
     print(signal)
+    # if (signal):
+    #     msg = "Open Gate"
+    #     conn.send(msg.encode('utf-8'))
 
 def mqttcallback(client, userdata, message):
     global currentRing,conn,addr,Lock,valueA,valueB
@@ -49,7 +52,7 @@ def mqttcallback(client, userdata, message):
             valueA = int(s1)
             valueB = int(s2)
             
-            #conn.send(s)
+            conn.send(s)
         #index = open("index.html").read().format(p1='', p2='')
     except Exception as e:
         print(e)
@@ -86,6 +89,9 @@ def on_new_client(clientsocket,addr):
             
             myAWSIoTMQTTClient.publish(topic, payload, 0)
             pass
+
+        # msg = "Open Gate"
+        # clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()
 
 print('server start at: %s:%s' % (HOST, PORT))
