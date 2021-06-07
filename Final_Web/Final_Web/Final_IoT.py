@@ -89,7 +89,6 @@ def main():
         conn, addr = s.accept()
         print('connected by ' + str(addr))
         t = threading.Thread(target=on_new_client,args=(conn,addr))
-        t.daemon = True
         tSocket.append(t)
         tSocket[-1].start()
     except Exception as e:

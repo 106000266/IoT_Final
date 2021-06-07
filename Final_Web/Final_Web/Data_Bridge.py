@@ -1,5 +1,6 @@
 signal = False
 A = 1
+B = 0
 
 def control():
     global signal
