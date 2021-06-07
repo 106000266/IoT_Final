@@ -68,22 +68,22 @@ void loop()
   String msg = String(Distance_cm);
   wifi.send((const uint8_t*)msg.c_str(), msg.length());
 
-  String received_msg;
-  buffer[64] = {0};
-  len = wifi.recv(buffer, sizeof(buffer), 10000);
-
-  if (len > 0) {
-      Serial.print("Received:[");
-      for(uint32_t i = 0; i < len; i++) {
-          received_msg.concat((char)buffer[i]);
-          Serial.print((char)buffer[i]);
-      }
-      Serial.print("]\r\n");
-      digitalWrite(ledPin, HIGH);
-  }
-  else {
-      digitalWrite(ledPin, LOW);
-  }
+//  String received_msg;
+//  buffer[64] = {0};
+//  len = wifi.recv(buffer, sizeof(buffer), 10000);
+//
+//  if (len > 0) {
+//      Serial.print("Received:[");
+//      for(uint32_t i = 0; i < len; i++) {
+//          received_msg.concat((char)buffer[i]);
+//          Serial.print((char)buffer[i]);
+//      }
+//      Serial.print("]\r\n");
+//      digitalWrite(ledPin, HIGH);
+//  }
+//  else {
+//      digitalWrite(ledPin, LOW);
+//  }
 
 
   delay(1000);
