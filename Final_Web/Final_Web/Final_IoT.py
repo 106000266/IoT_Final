@@ -1,4 +1,3 @@
-from flask import Flask, render_template, Response, request, redirect, url_for
 from Data_Bridge import get_signal
 import threading
 import socket
@@ -47,7 +46,6 @@ def mqttcallback(client, userdata, message):
     except Exception as e:
         print(e)
 
-
 # [TODO] Define ENDPOINT, CLIENT_ID, PATH_TO_CERT, PATH_TO_KEY, PATH_TO_ROOT(done)
 ENDPOINT = "a2n8nzfjjzpdhv-ats.iot.us-east-2.amazonaws.com"
 CLIENT_ID = "b0e1f939f3a24ac9bfd952dc7c93ae4a"
@@ -90,15 +88,6 @@ def on_new_client(clientsocket,addr):
 
 print('server start at: %s:%s' % (HOST, PORT))
 print('wait for connection...')
-
-@app.route('/')
-def index():
-    if valueA == 0:
-        return render_template('index.html', p1 = 'FULL', p2 = valueB)
-    elif valueB == 0:
-        return render_template('index.html', p1 = valueA, p2 = 'FULL')
-    else:
-        return render_template('index.html', p1 = valueA, p2 = valueB)
 
 def main():
     global conn, addr
